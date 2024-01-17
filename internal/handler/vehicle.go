@@ -2,6 +2,8 @@ package handler
 
 import (
 	"app/internal"
+	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/bootcamp-go/web/response"
@@ -73,6 +75,79 @@ func (h *VehicleDefault) GetAll() http.HandlerFunc {
 		response.JSON(w, http.StatusOK, map[string]any{
 			"message": "success",
 			"data":    data,
+		})
+	}
+}
+
+// Create is a method that returns a handler for the route POST /vehicles
+func (h *VehicleDefault) Create() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		var reqBody VehicleJSON
+		err := json.NewDecoder(r.Body).Decode(&reqBody)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte("Invalid request body"))
+			w.Header().Set("Content-Type", "text/plain")
+			response.JSON(w, http.StatusBadRequest, nil)
+			return
+		}
+
+		// process
+		v := internal.Vehicle{
+			Id: reqBody.ID,
+			VehicleAttributes: internal.VehicleAttributes{
+				Brand:           reqBody.Brand,
+				Model:           reqBody.Model,
+				Registration:    reqBody.Registration,
+				Color:           reqBody.Color,
+				FabricationYear: reqBody.FabricationYear,
+				Capacity:        reqBody.Capacity,
+				MaxSpeed:        reqBody.MaxSpeed,
+				FuelType:        reqBody.FuelType,
+				Transmission:    reqBody.Transmission,
+				Weight:          reqBody.Weight,
+				Dimensions: internal.Dimensions{
+					Height: reqBody.Height,
+					Length: reqBody.Length,
+					Width:  reqBody.Width,
+				},
+			},
+		}
+
+		// - create vehicle
+		err = h.sv.Create(v)
+		if err != nil {
+			// check error type with switch case and error.Is(err, internal.ErrVehicleAlreadyExists)
+			switch {
+			case errors.Is(err, internal.ErrVehicleAlreadyExists):
+				// response with status code 409 and message "vehicle already exists"
+				w.WriteHeader(http.StatusConflict)
+				w.Write([]byte("vehicle already exists"))
+				w.Header().Set("Content-Type", "text/plain")
+				response.JSON(w, http.StatusConflict, nil)
+				return
+			case errors.Is(err, internal.ErrVehicleIncomplete):
+				// response with status code 400 and message "vehicle incomplete"
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write([]byte("vehicle incomplete"))
+				w.Header().Set("Content-Type", "text/plain")
+				response.JSON(w, http.StatusBadRequest, nil)
+				return
+			default:
+				// response with status code 500 and message "internal server error"
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte("internal server error"))
+				w.Header().Set("Content-Type", "text/plain")
+				response.JSON(w, http.StatusInternalServerError, nil)
+				return
+			}
+		}
+
+		// response
+		response.JSON(w, http.StatusCreated, map[string]any{
+			"message": "success",
+			"data":    v,
 		})
 	}
 }

@@ -29,3 +29,23 @@ func (r *VehicleMap) FindAll() (v map[int]internal.Vehicle, err error) {
 
 	return
 }
+
+// Create is a method that creates a vehicle in the repository
+func (r *VehicleMap) Create(v internal.Vehicle) (err error) {
+	// check if vehicle already exists in db
+	_, ok := r.db[v.Id]
+	if ok {
+		err = internal.ErrVehicleAlreadyExists
+		return
+	}
+	// check if vehicle is incomplete
+	if v.Id == 0 || v.Brand == "" || v.Model == "" || v.Registration == "" || v.Color == "" || v.FabricationYear == 0 || v.Capacity == 0 || v.MaxSpeed == 0 || v.FuelType == "" || v.Transmission == "" || v.Weight == 0 || v.Height == 0 || v.Length == 0 || v.Width == 0 {
+		err = internal.ErrVehicleIncomplete
+		return
+	}
+
+	// add vehicle to db
+	r.db[v.Id] = v
+
+	return
+}
