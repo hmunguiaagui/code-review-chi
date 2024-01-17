@@ -71,7 +71,7 @@ func (a *ServerChi) Run() (err error) {
 	// - endpoints
 	rt.Route("/vehicles", func(rt chi.Router) {
 		// - GET /vehicles
-		rt.Get("/", hd.GetAll())
+		rt.Get("/all", hd.GetAll())
 		// - GET /vehicles?color={color}&year={year}
 		rt.Get("/", hd.FindByColorAndYear())
 	})
