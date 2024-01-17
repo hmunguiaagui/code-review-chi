@@ -29,3 +29,50 @@ func (r *VehicleMap) FindAll() (v map[int]internal.Vehicle, err error) {
 
 	return
 }
+
+// FindByBrandBetweenYears is a method that returns a map of vehicles that match the brand and years
+func (r *VehicleMap) FindByBrandBetweenYears(brand string, startYear, endYear int) (v map[int]internal.Vehicle, err error) {
+	v = make(map[int]internal.Vehicle)
+
+	// check if brand is empty
+	if brand == "" {
+		err = internal.ErrVehicleBrandNotFound
+		return
+	}
+
+	// check if brand exists
+	found := false
+	for _, value := range r.db {
+		if value.Brand == brand {
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		err = internal.ErrVehicleBrandNotFound
+		return
+	}
+
+	// check if startYear and endYear are valid
+	if startYear <= 0 || endYear <= 0 {
+
+		err = internal.ErrVehicleYearInvalid
+		return
+	}
+
+	// check if startYear is less than endYear
+	if startYear > endYear {
+		err = internal.ErrVehicleYearNotFound
+		return
+	}
+
+	// copy db
+	for key, value := range r.db {
+		if value.Brand == brand && value.FabricationYear >= startYear && value.FabricationYear <= endYear {
+			v[key] = value
+		}
+	}
+
+	return
+}

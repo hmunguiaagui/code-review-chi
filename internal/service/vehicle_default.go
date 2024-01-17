@@ -18,3 +18,9 @@ func (s *VehicleDefault) FindAll() (v map[int]internal.Vehicle, err error) {
 	v, err = s.rp.FindAll()
 	return
 }
+
+// FindByBrandBetweenYears is a method that returns a map of vehicles that match the brand and years
+func (s *VehicleDefault) FindByBrandBetweenYears(brand string, startYear, endYear int) (v map[int]internal.Vehicle, err error) {
+	v, err = s.rp.FindByBrandBetweenYears(brand, startYear, endYear)
+	return
+}
