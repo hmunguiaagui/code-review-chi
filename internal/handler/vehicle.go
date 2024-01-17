@@ -3,6 +3,7 @@ package handler
 import (
 	"app/internal"
 	"net/http"
+	"strconv"
 
 	"github.com/bootcamp-go/web/response"
 )
@@ -46,6 +47,64 @@ func (h *VehicleDefault) GetAll() http.HandlerFunc {
 		// - get all vehicles
 		v, err := h.sv.FindAll()
 		if err != nil {
+			response.JSON(w, http.StatusInternalServerError, nil)
+			return
+		}
+
+		// response
+		data := make(map[int]VehicleJSON)
+		for key, value := range v {
+			data[key] = VehicleJSON{
+				ID:              value.Id,
+				Brand:           value.Brand,
+				Model:           value.Model,
+				Registration:    value.Registration,
+				Color:           value.Color,
+				FabricationYear: value.FabricationYear,
+				Capacity:        value.Capacity,
+				MaxSpeed:        value.MaxSpeed,
+				FuelType:        value.FuelType,
+				Transmission:    value.Transmission,
+				Weight:          value.Weight,
+				Height:          value.Height,
+				Length:          value.Length,
+				Width:           value.Width,
+			}
+		}
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "success",
+			"data":    data,
+		})
+	}
+}
+
+// FindByColorAndYear is a method that returns a handler for the route GET /vehicles?color={color}&year={year}
+func (h *VehicleDefault) FindByColorAndYear() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// - get color and year from query string, both are optional
+		color := r.URL.Query().Get("color")
+		year := r.URL.Query().Get("year")
+		yearInt := 0
+		if year != "" {
+			var err error
+			yearInt, err = strconv.Atoi(year)
+			if err != nil {
+				w.Header().Set("Content-Type", "text/plain")
+				w.Write([]byte("year must be an integer"))
+				w.WriteHeader(http.StatusBadRequest)
+				response.JSON(w, http.StatusBadRequest, nil)
+				return
+			}
+		}
+
+		// process
+		// - get vehicles by color and year
+		v, err := h.sv.FindByColorAndYear(color, yearInt)
+		if err != nil {
+			w.Header().Set("Content-Type", "text/plain")
+			w.Write([]byte("internal server error"))
+			w.WriteHeader(http.StatusInternalServerError)
 			response.JSON(w, http.StatusInternalServerError, nil)
 			return
 		}

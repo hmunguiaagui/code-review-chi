@@ -18,3 +18,9 @@ func (s *VehicleDefault) FindAll() (v map[int]internal.Vehicle, err error) {
 	v, err = s.rp.FindAll()
 	return
 }
+
+// FindByColorAndYear is a method that returns a map of vehicles by color and year
+func (s *VehicleDefault) FindByColorAndYear(color string, year int) (v map[int]internal.Vehicle, err error) {
+	v, err = s.rp.FindByColorAndYear(color, year)
+	return
+}
