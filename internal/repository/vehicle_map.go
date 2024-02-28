@@ -1,6 +1,9 @@
 package repository
 
-import "app/internal"
+import (
+	"app/internal"
+	"strings"
+)
 
 // NewVehicleMap is a function that returns a new instance of VehicleMap
 func NewVehicleMap(db map[int]internal.Vehicle) *VehicleMap {
@@ -46,6 +49,38 @@ func (r *VehicleMap) Create(v internal.Vehicle) (err error) {
 
 	// add vehicle to db
 	r.db[v.Id] = v
+
+	return
+}
+
+// GetByColorAndYear is a method that returns a map of vehicles by color and year
+func (r *VehicleMap) GetByColorAndYear(color string, year int) (v map[int]internal.Vehicle, err error) {
+	v = make(map[int]internal.Vehicle)
+
+	// check if color is empty
+	if color == "" {
+		err = internal.ErrVehicleColorEmpty
+		return
+	}
+
+	// check if year is less or equal than zero
+	if year <= 0 {
+		err = internal.ErrVehicleYearEmpty
+		return
+	}
+
+	// get vehicles by color and year
+	for key, value := range r.db {
+		if strings.EqualFold(value.Color, color) && value.FabricationYear == year {
+			v[key] = value
+		}
+	}
+
+	// check if map is empty
+	if len(v) == 0 {
+		err = internal.ErrVehicleNotFound
+		return
+	}
 
 	return
 }

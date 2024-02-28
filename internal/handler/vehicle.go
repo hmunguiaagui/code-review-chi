@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/bootcamp-go/web/response"
+	"github.com/go-chi/chi/v5"
 )
 
 // VehicleJSON is a struct that represents a vehicle in JSON format
@@ -148,6 +150,60 @@ func (h *VehicleDefault) Create() http.HandlerFunc {
 		response.JSON(w, http.StatusCreated, map[string]any{
 			"message": "success",
 			"data":    v,
+		})
+	}
+}
+
+// GetByColorAndYear is a method that returns a handler for the route GET /vehicles/:color/:year
+func (h *VehicleDefault) GetByColorAndYear() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// getting color and year from url params
+		color := chi.URLParam(r, "color")
+		year := chi.URLParam(r, "year")
+		yearint, err := strconv.Atoi(year)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, "year must be an integer")
+			return
+		}
+
+		// process
+		// - get vehicles by color and year
+		v, err := h.sv.GetByColorAndYear(color, yearint)
+		if err != nil {
+			// switch to know the error type and response accordingly
+			switch {
+			case errors.Is(err, internal.ErrVehicleColorEmpty), errors.Is(err, internal.ErrVehicleYearEmpty), errors.Is(err, internal.ErrVehicleNotFound):
+				response.Error(w, http.StatusNotFound, "vehicle not found")
+			default:
+				response.Error(w, http.StatusInternalServerError, "internal server error")
+			}
+			return
+		}
+
+		// response
+		data := make(map[int]VehicleJSON)
+		for key, value := range v {
+			data[key] = VehicleJSON{
+				ID:              value.Id,
+				Brand:           value.Brand,
+				Model:           value.Model,
+				Registration:    value.Registration,
+				Color:           value.Color,
+				FabricationYear: value.FabricationYear,
+				Capacity:        value.Capacity,
+				MaxSpeed:        value.MaxSpeed,
+				FuelType:        value.FuelType,
+				Transmission:    value.Transmission,
+				Weight:          value.Weight,
+				Height:          value.Height,
+				Length:          value.Length,
+				Width:           value.Width,
+			}
+		}
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "success",
+			"data":    data,
 		})
 	}
 }
