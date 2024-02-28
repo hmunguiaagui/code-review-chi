@@ -11,8 +11,12 @@ var (
 	ErrVehicleColorEmpty = errors.New("color is empty")
 	// ErrVehicleYearEmpty is an error that represents that the year is empty
 	ErrVehicleYearEmpty = errors.New("year is empty")
+	// ErrVehicleYearEndInvalid is an error that represents that the year end is invalid
+	ErrVehicleYearEndInvalid = errors.New("year end is invalid")
 	// ErrVehicleNotFound is an error that represents that the vehicle was not found
 	ErrVehicleNotFound = errors.New("vehicle not found")
+	// ErrVehicleBrandEmpty is an error that represents that the brand is empty
+	ErrVehicleBrandEmpty = errors.New("brand is empty")
 )
 
 // VehicleRepository is an interface that represents a vehicle repository
@@ -23,4 +27,6 @@ type VehicleRepository interface {
 	Create(v Vehicle) (err error)
 	// GetByColorAndYear is a method that returns a map of vehicles by color and year
 	GetByColorAndYear(color string, year int) (v map[int]Vehicle, err error)
+	// GetByBrandAndYearRange is a method that returns a map of vehicles by brand and year range
+	GetByBrandAndYearRange(brand string, yearFrom int, yearTo int) (v map[int]Vehicle, err error)
 }

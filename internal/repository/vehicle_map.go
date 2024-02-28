@@ -84,3 +84,47 @@ func (r *VehicleMap) GetByColorAndYear(color string, year int) (v map[int]intern
 
 	return
 }
+
+// GetByBrandAndYearRange is a method that returns a map of vehicles by brand and year range
+func (r *VehicleMap) GetByBrandAndYearRange(brand string, yearFrom int, yearTo int) (v map[int]internal.Vehicle, err error) {
+	v = make(map[int]internal.Vehicle)
+
+	// check if brand is empty
+	if brand == "" {
+		err = internal.ErrVehicleBrandEmpty
+		return
+	}
+
+	// check if yearFrom is less or equal than zero
+	if yearFrom <= 0 {
+		err = internal.ErrVehicleYearEmpty
+		return
+	}
+
+	// check if yearTo is less or equal than zero
+	if yearTo <= 0 {
+		err = internal.ErrVehicleYearEmpty
+		return
+	}
+
+	// check if yearFrom is greater than yearTo
+	if yearFrom > yearTo {
+		err = internal.ErrVehicleYearEndInvalid
+		return
+	}
+
+	// get vehicles by brand and year range
+	for key, value := range r.db {
+		if strings.EqualFold(value.Brand, brand) && value.FabricationYear >= yearFrom && value.FabricationYear <= yearTo {
+			v[key] = value
+		}
+	}
+
+	// check if map is empty
+	if len(v) == 0 {
+		err = internal.ErrVehicleNotFound
+		return
+	}
+
+	return
+}
