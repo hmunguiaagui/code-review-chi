@@ -39,7 +39,7 @@ func (r *VehicleMap) Create(v internal.Vehicle) (err error) {
 		return
 	}
 	// check if vehicle is incomplete
-	if v.Id == 0 || v.Brand == "" || v.Model == "" || v.Registration == "" || v.Color == "" || v.FabricationYear == 0 || v.Capacity == 0 || v.MaxSpeed == 0 || v.FuelType == "" || v.Transmission == "" || v.Weight == 0 || v.Height == 0 || v.Length == 0 || v.Width == 0 {
+	if v.Id <= 0 || v.Brand == "" || v.Model == "" || v.Registration == "" || v.Color == "" || v.FabricationYear == 0 || v.Capacity == 0 || v.MaxSpeed == 0 || v.FuelType == "" || v.Transmission == "" || v.Weight == 0 || v.Height == 0 || v.Length == 0 || v.Width == 0 {
 		err = internal.ErrVehicleIncomplete
 		return
 	}
