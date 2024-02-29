@@ -19,6 +19,10 @@ var (
 	ErrVehicleBrandEmpty = errors.New("brand is empty")
 	// ErrVehicleBatchEmpty	is an error that represents that the batch is empty
 	ErrVehicleBatchEmpty = errors.New("batch is empty")
+	// ErrVehicleIdInvalid is an error that represents that the id is invalid
+	ErrVehicleIdInvalid = errors.New("id is invalid")
+	// ErrVehicleSpeedInvalid is an error that represents that the speed is invalid
+	ErrVehicleSpeedInvalid = errors.New("speed is invalid")
 )
 
 // VehicleRepository is an interface that represents a vehicle repository
@@ -35,4 +39,6 @@ type VehicleRepository interface {
 	GetAverageSpeedByBrand(brand string) (averageSpeed float64, err error)
 	// CreateBatch is a method that creates a batch of vehicles in the repository
 	CreateBatch(v []Vehicle) ([]Vehicle, error)
+	// UpdateSpeedById is a method that updates the speed of a vehicle by id and returns the vehicle updated
+	UpdateSpeedById(id int, speed float64) (vehicle Vehicle, err error)
 }

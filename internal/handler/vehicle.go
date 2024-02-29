@@ -363,3 +363,45 @@ func (h *VehicleDefault) CreateBatch() http.HandlerFunc {
 		})
 	}
 }
+
+// UpdateSpeedById is a method that returns a handler for the route - PUT /vehicles/{id}/update_speed?speed={speed}
+func (h *VehicleDefault) UpdateSpeedById() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// getting id and speed from url params
+		id := chi.URLParam(r, "id")
+		idInt, err := strconv.Atoi(id)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, "id must be an integer")
+			return
+		}
+		speed := r.URL.Query().Get("speed")
+		speedFloat, err := strconv.ParseFloat(speed, 64)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, "speed must be a number")
+			return
+		}
+
+		// process
+		// - update speed by id
+		v, err := h.sv.UpdateSpeedById(idInt, speedFloat)
+		if err != nil {
+			// switch to know the error type and response accordingly
+			switch {
+			case errors.Is(err, internal.ErrVehicleIdInvalid):
+				response.Error(w, http.StatusBadRequest, "invalid id")
+			case errors.Is(err, internal.ErrVehicleNotFound):
+				response.Error(w, http.StatusNotFound, "vehicle not found")
+			default:
+				response.Error(w, http.StatusInternalServerError, "internal server error")
+			}
+			return
+		}
+
+		// response
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "success",
+			"data":    v,
+		})
+	}
+}

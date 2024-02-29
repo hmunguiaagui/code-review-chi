@@ -199,3 +199,33 @@ func (r *VehicleMap) CreateBatch(v []internal.Vehicle) ([]internal.Vehicle, erro
 
 	return v, nil
 }
+
+// UpdateSpeedById is a method that updates the speed of a vehicle by id and returns the updated vehicle
+func (r *VehicleMap) UpdateSpeedById(id int, speed float64) (vehicle internal.Vehicle, err error) {
+	// check if id is less or equal than zero
+	if id <= 0 {
+		err = internal.ErrVehicleIdInvalid
+		return
+	}
+
+	// check if speed is less or equal than zero
+	if speed <= 0 {
+		err = internal.ErrVehicleSpeedInvalid
+		return
+	}
+
+	// check if vehicle exists in db
+	vehicle, ok := r.db[id]
+	if !ok {
+		err = internal.ErrVehicleNotFound
+		return
+	}
+
+	// update speed
+	vehicle.MaxSpeed = speed
+
+	// update vehicle in db
+	r.db[id] = vehicle
+
+	return
+}

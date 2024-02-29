@@ -48,3 +48,9 @@ func (s *VehicleDefault) CreateBatch(v []internal.Vehicle) ([]internal.Vehicle, 
 	vehicles, err := s.rp.CreateBatch(v)
 	return vehicles, err
 }
+
+// UpdateSpeedById is a method that updates the speed of a vehicle by id and returns the vehicle updated
+func (s *VehicleDefault) UpdateSpeedById(id int, speed float64) (vehicle internal.Vehicle, err error) {
+	vehicle, err = s.rp.UpdateSpeedById(id, speed)
+	return
+}

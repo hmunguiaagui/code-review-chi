@@ -14,4 +14,6 @@ type VehicleService interface {
 	GetAverageSpeedByBrand(brand string) (averageSpeed float64, err error)
 	// CreateBatch is a method that creates a batch of vehicles in the repository
 	CreateBatch(v []Vehicle) ([]Vehicle, error)
+	// UpdateSpeedById is a method that updates the speed of a vehicle by id and returns the vehicle updated
+	UpdateSpeedById(id int, speed float64) (vehicle Vehicle, err error)
 }
