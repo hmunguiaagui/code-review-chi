@@ -6,6 +6,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/bootcamp-go/web/response"
 	"github.com/go-chi/chi/v5"
@@ -623,6 +624,84 @@ func (h *VehicleDefault) GetAverageCapacityByBrand() http.HandlerFunc {
 		response.JSON(w, http.StatusOK, map[string]any{
 			"message": "success",
 			"data":    v,
+		})
+	}
+}
+
+// GetByDimensions is a method that returns a handler for the route - GET /vehicles/dimensions?length={min_length}-{max_length}&width={min_width}-{max_width}
+func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// getting length and width from url params
+		length := r.URL.Query().Get("length")
+		// split length into min and max length
+		lengthSplit := strings.Split(length, "-")
+		// get min/max length from lengthSplit[0] and max length from lengthSplit[1] to float64
+		minLengthFloat, err := strconv.ParseFloat(lengthSplit[0], 64)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, "min_length must be a float")
+			return
+		}
+		maxLengthFloat, err := strconv.ParseFloat(lengthSplit[1], 64)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, "max_length must be a float")
+			return
+		}
+
+		width := r.URL.Query().Get("width")
+		// split width into min and max width
+		widthSplit := strings.Split(width, "-")
+		// get min/max width from widthSplit[0] and max width from widthSplit[1] to float64
+		minWidthFloat, err := strconv.ParseFloat(widthSplit[0], 64)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, "min_width must be a float")
+			return
+		}
+		maxWidthFloat, err := strconv.ParseFloat(widthSplit[1], 64)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, "max_width must be a float")
+			return
+		}
+
+		// process
+		// - get vehicles by dimensions
+		v, err := h.sv.GetByDimensions(minLengthFloat, maxLengthFloat, minWidthFloat, maxWidthFloat)
+		if err != nil {
+			// switch to know the error type and response accordingly
+			switch {
+			case errors.Is(err, internal.ErrVehicleLengthInvalid), errors.Is(err, internal.ErrVehicleWidthInvalid):
+				response.Error(w, http.StatusBadRequest, "invalid dimensions")
+			case errors.Is(err, internal.ErrVehicleNotFound):
+				response.Error(w, http.StatusNotFound, "vehicle not found")
+			default:
+				response.Error(w, http.StatusInternalServerError, "internal server error")
+			}
+			return
+		}
+
+		// response
+		data := make([]VehicleJSON, len(v))
+		for i, value := range v {
+			data[i] = VehicleJSON{
+				ID:              value.Id,
+				Brand:           value.Brand,
+				Model:           value.Model,
+				Registration:    value.Registration,
+				Color:           value.Color,
+				FabricationYear: value.FabricationYear,
+				Capacity:        value.Capacity,
+				MaxSpeed:        value.MaxSpeed,
+				FuelType:        value.FuelType,
+				Transmission:    value.Transmission,
+				Weight:          value.Weight,
+				Height:          value.Height,
+				Length:          value.Length,
+				Width:           value.Width,
+			}
+		}
+		response.JSON(w, http.StatusOK, map[string]interface{}{
+			"message": "success",
+			"data":    data,
 		})
 	}
 }

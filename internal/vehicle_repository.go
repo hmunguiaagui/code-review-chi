@@ -27,6 +27,14 @@ var (
 	ErrVehicleFuelTypeEmpty = errors.New("fuel type is empty")
 	// ErrVehicleTransmissionEmpty is an error that represents that the transmission is empty
 	ErrVehicleTransmissionEmpty = errors.New("transmission is empty")
+	// ErrVehicleLengthInvalid is an error that represents that the length is invalid
+	ErrVehicleLengthInvalid = errors.New("length is invalid")
+	// ErrVehicleWidthInvalid is an error that represents that the width is invalid
+	ErrVehicleWidthInvalid = errors.New("width is invalid")
+	// ErrVehicleMinLengthGreaterThanMaxLength is an error that represents that the min length is greater than the max length
+	ErrVehicleMinLengthGreaterThanMaxLength = errors.New("min length is greater than max length")
+	// ErrVehicleMinWidthGreaterThanMaxWidth is an error that represents that the min width is greater than the max width
+	ErrVehicleMinWidthGreaterThanMaxWidth = errors.New("min width is greater than max width")
 )
 
 // VehicleRepository is an interface that represents a vehicle repository
@@ -55,4 +63,6 @@ type VehicleRepository interface {
 	UpdateFuelById(id int, fuelType string) (vehicle Vehicle, err error)
 	// GetAverageCapacityByBrand is a method that returns the average capacity by brand
 	GetAverageCapacityByBrand(brand string) (averageCapacity float64, err error)
+	// GetByDimensions is a method that returns a slice of vehicles by dimensions (min length, max length, min width, max width)
+	GetByDimensions(minLength float64, maxLength float64, minWidth float64, maxWidth float64) (v []Vehicle, err error)
 }

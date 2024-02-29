@@ -84,3 +84,9 @@ func (s *VehicleDefault) GetAverageCapacityByBrand(brand string) (averageCapacit
 	averageCapacity, err = s.rp.GetAverageCapacityByBrand(brand)
 	return
 }
+
+// GetByDimensions is a method that returns a slice of vehicles by dimensions (min length, max length, min width, max width)
+func (s *VehicleDefault) GetByDimensions(minLength float64, maxLength float64, minWidth float64, maxWidth float64) (v []internal.Vehicle, err error) {
+	v, err = s.rp.GetByDimensions(minLength, maxLength, minWidth, maxWidth)
+	return
+}

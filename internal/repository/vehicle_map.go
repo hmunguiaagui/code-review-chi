@@ -364,3 +364,45 @@ func (r *VehicleMap) GetAverageCapacityByBrand(brand string) (averageCapacity fl
 
 	return
 }
+
+// GetByDimensions is a method that returns a slice of vehicles by dimensions (min length, max length, min width, max width)
+func (r *VehicleMap) GetByDimensions(minLength float64, maxLength float64, minWidth float64, maxWidth float64) (v []internal.Vehicle, err error) {
+	// check if min/max length is less than zero
+	if minLength < 0 || maxLength < 0 {
+		err = internal.ErrVehicleLengthInvalid
+		return
+	}
+
+	// check if min/max width is less than zero
+	if minWidth < 0 || maxWidth < 0 {
+		err = internal.ErrVehicleWidthInvalid
+		return
+	}
+
+	// check if min length is greater than max length
+	if minLength > maxLength {
+		err = internal.ErrVehicleMinLengthGreaterThanMaxLength
+		return
+	}
+
+	// check if min width is greater than max width
+	if minWidth > maxWidth {
+		err = internal.ErrVehicleMinWidthGreaterThanMaxWidth
+		return
+	}
+
+	// get vehicles by dimensions
+	for _, value := range r.db {
+		if value.Length >= minLength && value.Length <= maxLength && value.Width >= minWidth && value.Width <= maxWidth {
+			v = append(v, value)
+		}
+	}
+
+	// check if slice is empty
+	if len(v) == 0 {
+		err = internal.ErrVehicleNotFound
+		return
+	}
+
+	return
+}

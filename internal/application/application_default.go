@@ -94,6 +94,8 @@ func (a *ServerChi) Run() (err error) {
 		rt.Put("/{id}/update_fuel", hd.UpdateFuelById())
 		// - GET /vehicles/average_capacity/brand/{brand}
 		rt.Get("/average_capacity/brand/{brand}", hd.GetAverageCapacityByBrand())
+		// - GET /vehicles/dimensions?length={min_length}-{max_length}&width={min_width}-{max_width}
+		rt.Get("/dimensions", hd.GetByDimensions())
 	})
 
 	// run server

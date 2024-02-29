@@ -26,4 +26,6 @@ type VehicleService interface {
 	UpdateFuelById(id int, fuel string) (vehicle Vehicle, err error)
 	// GetAverageCapacityByBrand is a method that returns the average capacity by brand
 	GetAverageCapacityByBrand(brand string) (averageCapacity float64, err error)
+	// GetByDimensions is a method that returns a slice of vehicles by dimensions (min length, max length, min width, max width)
+	GetByDimensions(minLength float64, maxLength float64, minWidth float64, maxWidth float64) (v []Vehicle, err error)
 }
