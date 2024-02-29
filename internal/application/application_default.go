@@ -86,6 +86,8 @@ func (a *ServerChi) Run() (err error) {
 		rt.Put("/{id}/update_speed", hd.UpdateSpeedById())
 		// - GET /vehicles/fuel_type/{type}
 		rt.Get("/fuel_type/{type}", hd.GetByFuelType())
+		// - DELETE /vehicles/{id}
+		rt.Delete("/{id}", hd.DeleteById())
 	})
 
 	// run server

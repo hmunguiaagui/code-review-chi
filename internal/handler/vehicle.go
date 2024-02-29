@@ -473,3 +473,36 @@ func (h *VehicleDefault) GetByFuelType() http.HandlerFunc {
 		})
 	}
 }
+
+// DeleteById is a method that returns a handler for the route - DELETE /vehicles/{id}
+func (h *VehicleDefault) DeleteById() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// getting id from url params
+		id := chi.URLParam(r, "id")
+		idInt, err := strconv.Atoi(id)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, "id must be an integer")
+			return
+		}
+
+		// process
+		// - delete vehicle by id
+		err = h.sv.DeleteById(idInt)
+		if err != nil {
+			// switch to know the error type and response accordingly
+			switch {
+			case errors.Is(err, internal.ErrVehicleIdInvalid):
+				response.Error(w, http.StatusBadRequest, "invalid id")
+			case errors.Is(err, internal.ErrVehicleNotFound):
+				response.Error(w, http.StatusNotFound, "vehicle not found")
+			default:
+				response.Error(w, http.StatusInternalServerError, "internal server error")
+			}
+			return
+		}
+
+		// response
+		response.JSON(w, http.StatusNoContent, nil)
+	}
+}

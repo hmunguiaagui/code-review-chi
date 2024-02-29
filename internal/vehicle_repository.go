@@ -45,4 +45,6 @@ type VehicleRepository interface {
 	UpdateSpeedById(id int, speed float64) (vehicle Vehicle, err error)
 	// GetByFuelType is a method that returns a map of vehicles by fuel type
 	GetByFuelType(fuelType string) (v map[int]Vehicle, err error)
+	// DeleteById is a method that deletes a vehicle by id
+	DeleteById(id int) (err error)
 }
