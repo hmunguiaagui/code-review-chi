@@ -556,3 +556,42 @@ func (h *VehicleDefault) GetByTransmissionType() http.HandlerFunc {
 		})
 	}
 }
+
+// UpdateFuelById is a method that returns a handler for the route - PUT /vehicles/{id}/update_fuel?fuel_type={fuel}
+func (h *VehicleDefault) UpdateFuelById() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// getting id and fuel type from url params
+		id := chi.URLParam(r, "id")
+		idInt, err := strconv.Atoi(id)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, "id must be an integer")
+			return
+		}
+		fuelType := r.URL.Query().Get("fuel_type")
+
+		// process
+		// - update fuel type by id
+		v, err := h.sv.UpdateFuelById(idInt, fuelType)
+		if err != nil {
+			// switch to know the error type and response accordingly
+			switch {
+			case errors.Is(err, internal.ErrVehicleIdInvalid):
+				response.Error(w, http.StatusBadRequest, "invalid id")
+			case errors.Is(err, internal.ErrVehicleFuelTypeEmpty):
+				response.Error(w, http.StatusBadRequest, "fuel_type must not be empty")
+			case errors.Is(err, internal.ErrVehicleNotFound):
+				response.Error(w, http.StatusNotFound, "vehicle not found")
+			default:
+				response.Error(w, http.StatusInternalServerError, "internal server error")
+			}
+			return
+		}
+
+		// response
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "success",
+			"data":    v,
+		})
+	}
+}

@@ -302,3 +302,33 @@ func (r *VehicleMap) GetByTransmissionType(transmissionType string) (v map[int]i
 
 	return
 }
+
+// UpdateFuelById is a method that updates the fuel of a vehicle by id and returns the updated vehicle
+func (r *VehicleMap) UpdateFuelById(id int, fuelType string) (vehicle internal.Vehicle, err error) {
+	// check if id is less or equal than zero
+	if id <= 0 {
+		err = internal.ErrVehicleIdInvalid
+		return
+	}
+
+	// check if fuel type is empty
+	if fuelType == "" {
+		err = internal.ErrVehicleFuelTypeEmpty
+		return
+	}
+
+	// check if vehicle exists in db
+	vehicle, ok := r.db[id]
+	if !ok {
+		err = internal.ErrVehicleNotFound
+		return
+	}
+
+	// update fuel
+	vehicle.FuelType = fuelType
+
+	// update vehicle in db
+	r.db[id] = vehicle
+
+	return
+}

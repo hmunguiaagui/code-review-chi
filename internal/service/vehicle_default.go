@@ -72,3 +72,9 @@ func (s *VehicleDefault) GetByTransmissionType(transmissionType string) (v map[i
 	v, err = s.rp.GetByTransmissionType(transmissionType)
 	return
 }
+
+// UpdateFuelById is a method that updates the fuel of a vehicle by id and returns the vehicle updated
+func (s *VehicleDefault) UpdateFuelById(id int, fuel string) (vehicle internal.Vehicle, err error) {
+	vehicle, err = s.rp.UpdateFuelById(id, fuel)
+	return
+}
