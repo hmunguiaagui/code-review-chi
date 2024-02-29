@@ -17,6 +17,8 @@ var (
 	ErrVehicleNotFound = errors.New("vehicle not found")
 	// ErrVehicleBrandEmpty is an error that represents that the brand is empty
 	ErrVehicleBrandEmpty = errors.New("brand is empty")
+	// ErrVehicleBatchEmpty	is an error that represents that the batch is empty
+	ErrVehicleBatchEmpty = errors.New("batch is empty")
 )
 
 // VehicleRepository is an interface that represents a vehicle repository
@@ -31,4 +33,6 @@ type VehicleRepository interface {
 	GetByBrandAndYearRange(brand string, yearFrom int, yearTo int) (v map[int]Vehicle, err error)
 	// GetAverageSpeedByBrand is a method that returns the average speed by brand
 	GetAverageSpeedByBrand(brand string) (averageSpeed float64, err error)
+	// CreateBatch is a method that creates a batch of vehicles in the repository
+	CreateBatch(v []Vehicle) ([]Vehicle, error)
 }

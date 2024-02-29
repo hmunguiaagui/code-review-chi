@@ -300,3 +300,66 @@ func (h *VehicleDefault) GetAverageSpeedByBrand() http.HandlerFunc {
 		})
 	}
 }
+
+// CreateBatch is a method that returns a handler for the route POST /vehicles/batch
+func (h *VehicleDefault) CreateBatch() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// getting vehicles from request body
+		var vehiclesJSON []VehicleJSON
+		err := json.NewDecoder(r.Body).Decode(&vehiclesJSON)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, "invalid request body")
+			return
+		}
+
+		// process
+		// parse VehicleJSON to Vehicle
+		vehicles := make([]internal.Vehicle, len(vehiclesJSON))
+		for i, v := range vehiclesJSON {
+			vehicles[i] = internal.Vehicle{
+				Id: v.ID,
+				VehicleAttributes: internal.VehicleAttributes{
+					Brand:           v.Brand,
+					Model:           v.Model,
+					Registration:    v.Registration,
+					Color:           v.Color,
+					FabricationYear: v.FabricationYear,
+					Capacity:        v.Capacity,
+					MaxSpeed:        v.MaxSpeed,
+					FuelType:        v.FuelType,
+					Transmission:    v.Transmission,
+					Weight:          v.Weight,
+					Dimensions: internal.Dimensions{
+						Height: v.Height,
+						Length: v.Length,
+						Width:  v.Width,
+					},
+				},
+			}
+		}
+
+		// - create vehicles
+		v, err := h.sv.CreateBatch(vehicles)
+		if err != nil {
+			// switch to know the error type and response accordingly
+			switch {
+			case errors.Is(err, internal.ErrVehicleIncomplete):
+				response.Error(w, http.StatusBadRequest, "vehicle/s incomplete")
+			case errors.Is(err, internal.ErrVehicleAlreadyExists):
+				response.Error(w, http.StatusConflict, "vehicle/s already exists")
+			case errors.Is(err, internal.ErrVehicleBrandEmpty), errors.Is(err, internal.ErrVehicleYearEmpty), errors.Is(err, internal.ErrVehicleColorEmpty):
+				response.Error(w, http.StatusBadRequest, "vehicle/s data must not be empty")
+			default:
+				response.Error(w, http.StatusInternalServerError, "internal server error")
+			}
+			return
+		}
+
+		// response
+		response.JSON(w, http.StatusCreated, map[string]any{
+			"message": "success",
+			"data":    v,
+		})
+	}
+}

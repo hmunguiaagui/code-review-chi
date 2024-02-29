@@ -160,3 +160,42 @@ func (r *VehicleMap) GetAverageSpeedByBrand(brand string) (averageSpeed float64,
 
 	return
 }
+
+// CreateBatch is a method that creates a batch of vehicles in the repository
+func (r *VehicleMap) CreateBatch(v []internal.Vehicle) ([]internal.Vehicle, error) {
+	// check if slice is empty
+	if len(v) == 0 {
+		return nil, internal.ErrVehicleBatchEmpty
+	}
+
+	// check if vehicle already exists in db
+	for _, value := range v {
+		_, ok := r.db[value.Id]
+		if ok {
+			return nil, internal.ErrVehicleAlreadyExists
+		}
+	}
+
+	// check if slice has duplicates
+	for i, value := range v {
+		for j, value2 := range v {
+			if i != j && value.Id == value2.Id {
+				return nil, internal.ErrVehicleAlreadyExists
+			}
+		}
+	}
+
+	// check if slice has incomplete vehicles
+	for _, value := range v {
+		if value.Id <= 0 || value.Brand == "" || value.Model == "" || value.Registration == "" || value.Color == "" || value.FabricationYear == 0 || value.Capacity == 0 || value.MaxSpeed == 0 || value.FuelType == "" || value.Transmission == "" || value.Weight == 0 || value.Height == 0 || value.Length == 0 || value.Width == 0 {
+			return nil, internal.ErrVehicleIncomplete
+		}
+	}
+
+	// add vehicles to db
+	for _, value := range v {
+		r.db[value.Id] = value
+	}
+
+	return v, nil
+}

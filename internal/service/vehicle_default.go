@@ -42,3 +42,9 @@ func (s *VehicleDefault) GetAverageSpeedByBrand(brand string) (averageSpeed floa
 	averageSpeed, err = s.rp.GetAverageSpeedByBrand(brand)
 	return
 }
+
+// CreateBatch is a method that creates a batch of vehicles
+func (s *VehicleDefault) CreateBatch(v []internal.Vehicle) ([]internal.Vehicle, error) {
+	vehicles, err := s.rp.CreateBatch(v)
+	return vehicles, err
+}
