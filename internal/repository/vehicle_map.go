@@ -21,16 +21,16 @@ type VehicleMap struct {
 	db map[int]internal.Vehicle
 }
 
-// FindAll is a method that returns a map of all vehicles
-func (r *VehicleMap) FindAll() (v map[int]internal.Vehicle, err error) {
-	v = make(map[int]internal.Vehicle)
+// FindAll is a method that returns a slice of all vehicles
+func (r *VehicleMap) FindAll() ([]internal.Vehicle, error) {
+	vehicles := make([]internal.Vehicle, 0, len(r.db))
 
-	// copy db
-	for key, value := range r.db {
-		v[key] = value
+	// copy vehicles from db
+	for _, value := range r.db {
+		vehicles = append(vehicles, value)
 	}
 
-	return
+	return vehicles, nil
 }
 
 // Create is a method that creates a vehicle in the repository
@@ -53,80 +53,72 @@ func (r *VehicleMap) Create(v internal.Vehicle) (err error) {
 	return
 }
 
-// GetByColorAndYear is a method that returns a map of vehicles by color and year
-func (r *VehicleMap) GetByColorAndYear(color string, year int) (v map[int]internal.Vehicle, err error) {
-	v = make(map[int]internal.Vehicle)
+// GetByColorAndYear is a method that returns a slice of vehicles by color and year
+func (r *VehicleMap) GetByColorAndYear(color string, year int) ([]internal.Vehicle, error) {
+	vehicles := make([]internal.Vehicle, 0)
 
 	// check if color is empty
 	if color == "" {
-		err = internal.ErrVehicleColorEmpty
-		return
+		return vehicles, internal.ErrVehicleColorEmpty
 	}
 
 	// check if year is less or equal than zero
 	if year <= 0 {
-		err = internal.ErrVehicleYearEmpty
-		return
+		return vehicles, internal.ErrVehicleYearEmpty
 	}
 
 	// get vehicles by color and year
-	for key, value := range r.db {
+	for _, value := range r.db {
 		if strings.EqualFold(value.Color, color) && value.FabricationYear == year {
-			v[key] = value
+			vehicles = append(vehicles, value)
 		}
 	}
 
-	// check if map is empty
-	if len(v) == 0 {
-		err = internal.ErrVehicleNotFound
-		return
+	// check if slice is empty
+	if len(vehicles) == 0 {
+		return vehicles, internal.ErrVehicleNotFound
 	}
 
-	return
+	return vehicles, nil
 }
 
-// GetByBrandAndYearRange is a method that returns a map of vehicles by brand and year range
-func (r *VehicleMap) GetByBrandAndYearRange(brand string, yearFrom int, yearTo int) (v map[int]internal.Vehicle, err error) {
-	v = make(map[int]internal.Vehicle)
+// GetByBrandAndYearRange is a method that returns a slice of vehicles by brand and year range
+func (r *VehicleMap) GetByBrandAndYearRange(brand string, yearFrom int, yearTo int) ([]internal.Vehicle, error) {
+	vehicles := make([]internal.Vehicle, 0)
 
 	// check if brand is empty
 	if brand == "" {
-		err = internal.ErrVehicleBrandEmpty
-		return
+		return vehicles, internal.ErrVehicleBrandEmpty
 	}
 
 	// check if yearFrom is less or equal than zero
 	if yearFrom <= 0 {
-		err = internal.ErrVehicleYearEmpty
-		return
+		return vehicles, internal.ErrVehicleYearEmpty
 	}
 
 	// check if yearTo is less or equal than zero
 	if yearTo <= 0 {
-		err = internal.ErrVehicleYearEmpty
-		return
+		return vehicles, internal.ErrVehicleYearEmpty
 	}
 
 	// check if yearFrom is greater than yearTo
 	if yearFrom > yearTo {
-		err = internal.ErrVehicleYearEndInvalid
-		return
+		return vehicles, internal.ErrVehicleYearEndInvalid
 	}
 
 	// get vehicles by brand and year range
-	for key, value := range r.db {
+	for _, value := range r.db {
 		if strings.EqualFold(value.Brand, brand) && value.FabricationYear >= yearFrom && value.FabricationYear <= yearTo {
-			v[key] = value
+			vehicles = append(vehicles, value)
 		}
 	}
 
-	// check if map is empty
-	if len(v) == 0 {
-		err = internal.ErrVehicleNotFound
-		return
+	// check if slice is empty
+	if len(vehicles) == 0 {
+		return vehicles, internal.ErrVehicleNotFound
 	}
 
-	return
+	return vehicles, nil
 }
 
 // GetAverageSpeedByBrand is a method that returns the average speed by brand
@@ -230,30 +222,28 @@ func (r *VehicleMap) UpdateSpeedById(id int, speed float64) (vehicle internal.Ve
 	return
 }
 
-// GetByFuelType is a method that returns a map of vehicles by fuel type
-func (r *VehicleMap) GetByFuelType(fuelType string) (v map[int]internal.Vehicle, err error) {
-	v = make(map[int]internal.Vehicle)
+// GetByFuelType is a method that returns a slice of vehicles by fuel type
+func (r *VehicleMap) GetByFuelType(fuelType string) ([]internal.Vehicle, error) {
+	var vehicles []internal.Vehicle
 
 	// check if fuel type is empty
 	if fuelType == "" {
-		err = internal.ErrVehicleFuelTypeEmpty
-		return
+		return vehicles, internal.ErrVehicleFuelTypeEmpty
 	}
 
 	// get vehicles by fuel type
-	for key, value := range r.db {
+	for _, value := range r.db {
 		if strings.EqualFold(value.FuelType, fuelType) {
-			v[key] = value
+			vehicles = append(vehicles, value)
 		}
 	}
 
-	// check if map is empty
-	if len(v) == 0 {
-		err = internal.ErrVehicleNotFound
-		return
+	// check if slice is empty
+	if len(vehicles) == 0 {
+		return vehicles, internal.ErrVehicleNotFound
 	}
 
-	return
+	return vehicles, nil
 }
 
 // DeleteById is a method that deletes a vehicle by id
@@ -277,30 +267,28 @@ func (r *VehicleMap) DeleteById(id int) (err error) {
 	return
 }
 
-// GetByTransmissionType is a method that returns a map of vehicles by transmission type
-func (r *VehicleMap) GetByTransmissionType(transmissionType string) (v map[int]internal.Vehicle, err error) {
-	v = make(map[int]internal.Vehicle)
+// GetByTransmissionType is a method that returns a slice of vehicles by transmission type
+func (r *VehicleMap) GetByTransmissionType(transmissionType string) ([]internal.Vehicle, error) {
+	var vehicles []internal.Vehicle
 
 	// check if transmission type is empty
 	if transmissionType == "" {
-		err = internal.ErrVehicleTransmissionEmpty
-		return
+		return vehicles, internal.ErrVehicleTransmissionEmpty
 	}
 
 	// get vehicles by transmission type
-	for key, value := range r.db {
+	for _, value := range r.db {
 		if strings.EqualFold(value.Transmission, transmissionType) {
-			v[key] = value
+			vehicles = append(vehicles, value)
 		}
 	}
 
-	// check if map is empty
-	if len(v) == 0 {
-		err = internal.ErrVehicleNotFound
-		return
+	// check if slice is empty
+	if len(vehicles) == 0 {
+		return vehicles, internal.ErrVehicleNotFound
 	}
 
-	return
+	return vehicles, nil
 }
 
 // UpdateFuelById is a method that updates the fuel of a vehicle by id and returns the updated vehicle

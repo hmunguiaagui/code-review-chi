@@ -13,10 +13,9 @@ type VehicleDefault struct {
 	rp internal.VehicleRepository
 }
 
-// FindAll is a method that returns a map of all vehicles
-func (s *VehicleDefault) FindAll() (v map[int]internal.Vehicle, err error) {
-	v, err = s.rp.FindAll()
-	return
+// FindAll is a method that returns a slice of all vehicles
+func (s *VehicleDefault) FindAll() ([]internal.Vehicle, error) {
+	return s.rp.FindAll()
 }
 
 // Create is a method that creates a vehicle in the repository
@@ -25,16 +24,14 @@ func (s *VehicleDefault) Create(v internal.Vehicle) (err error) {
 	return
 }
 
-// GetByColorAndYear is a method that returns a map of vehicles by color and year
-func (s *VehicleDefault) GetByColorAndYear(color string, year int) (v map[int]internal.Vehicle, err error) {
-	v, err = s.rp.GetByColorAndYear(color, year)
-	return
+// GetByColorAndYear is a method that returns a slice of vehicles by color and year
+func (s *VehicleDefault) GetByColorAndYear(color string, year int) ([]internal.Vehicle, error) {
+	return s.rp.GetByColorAndYear(color, year)
 }
 
-// GetByBrandAndYearRange is a method that returns a map of vehicles by brand and year range
-func (s *VehicleDefault) GetByBrandAndYearRange(brand string, yearFrom int, yearTo int) (v map[int]internal.Vehicle, err error) {
-	v, err = s.rp.GetByBrandAndYearRange(brand, yearFrom, yearTo)
-	return
+// GetByBrandAndYearRange is a method that returns a slice of vehicles by brand and year range
+func (s *VehicleDefault) GetByBrandAndYearRange(brand string, yearFrom int, yearTo int) ([]internal.Vehicle, error) {
+	return s.rp.GetByBrandAndYearRange(brand, yearFrom, yearTo)
 }
 
 // GetAverageSpeedByBrand is a method that returns the average speed by brand
@@ -55,10 +52,9 @@ func (s *VehicleDefault) UpdateSpeedById(id int, speed float64) (vehicle interna
 	return
 }
 
-// GetByFuelType is a method that returns a map of vehicles by fuel type
-func (s *VehicleDefault) GetByFuelType(fuelType string) (v map[int]internal.Vehicle, err error) {
-	v, err = s.rp.GetByFuelType(fuelType)
-	return
+// GetByFuelType is a method that returns a slice of vehicles by fuel type
+func (s *VehicleDefault) GetByFuelType(fuelType string) ([]internal.Vehicle, error) {
+	return s.rp.GetByFuelType(fuelType)
 }
 
 // DeleteById is a method that deletes a vehicle by id
@@ -67,10 +63,9 @@ func (s *VehicleDefault) DeleteById(id int) (err error) {
 	return
 }
 
-// GetByTransmissionType is a method that returns a map of vehicles by transmission type
-func (s *VehicleDefault) GetByTransmissionType(transmissionType string) (v map[int]internal.Vehicle, err error) {
-	v, err = s.rp.GetByTransmissionType(transmissionType)
-	return
+// GetByTransmissionType is a method that returns a slice of vehicles by transmission type
+func (s *VehicleDefault) GetByTransmissionType(transmissionType string) ([]internal.Vehicle, error) {
+	return s.rp.GetByTransmissionType(transmissionType)
 }
 
 // UpdateFuelById is a method that updates the fuel of a vehicle by id and returns the vehicle updated

@@ -56,9 +56,9 @@ func (h *VehicleDefault) GetAll() http.HandlerFunc {
 		}
 
 		// response
-		data := make(map[int]VehicleJSON)
-		for key, value := range v {
-			data[key] = VehicleJSON{
+		data := make([]VehicleJSON, len(v))
+		for i, value := range v {
+			data[i] = VehicleJSON{
 				ID:              value.Id,
 				Brand:           value.Brand,
 				Model:           value.Model,
@@ -75,7 +75,7 @@ func (h *VehicleDefault) GetAll() http.HandlerFunc {
 				Width:           value.Width,
 			}
 		}
-		response.JSON(w, http.StatusOK, map[string]any{
+		response.JSON(w, http.StatusOK, map[string]interface{}{
 			"message": "success",
 			"data":    data,
 		})
@@ -201,9 +201,9 @@ func (h *VehicleDefault) GetByColorAndYear() http.HandlerFunc {
 		}
 
 		// response
-		data := make(map[int]VehicleJSON)
-		for key, value := range v {
-			data[key] = VehicleJSON{
+		data := make([]VehicleJSON, len(v))
+		for i, value := range v {
+			data[i] = VehicleJSON{
 				ID:              value.Id,
 				Brand:           value.Brand,
 				Model:           value.Model,
@@ -220,7 +220,7 @@ func (h *VehicleDefault) GetByColorAndYear() http.HandlerFunc {
 				Width:           value.Width,
 			}
 		}
-		response.JSON(w, http.StatusOK, map[string]any{
+		response.JSON(w, http.StatusOK, map[string]interface{}{
 			"message": "success",
 			"data":    data,
 		})
@@ -263,9 +263,9 @@ func (h *VehicleDefault) GetByBrandAndYearRange() http.HandlerFunc {
 		}
 
 		// response
-		data := make(map[int]VehicleJSON)
-		for key, value := range v {
-			data[key] = VehicleJSON{
+		data := make([]VehicleJSON, len(v))
+		for i, value := range v {
+			data[i] = VehicleJSON{
 				ID:              value.Id,
 				Brand:           value.Brand,
 				Model:           value.Model,
@@ -449,9 +449,9 @@ func (h *VehicleDefault) GetByFuelType() http.HandlerFunc {
 		}
 
 		// response
-		data := make(map[int]VehicleJSON)
-		for key, value := range v {
-			data[key] = VehicleJSON{
+		data := make([]VehicleJSON, len(v))
+		for i, value := range v {
+			data[i] = VehicleJSON{
 				ID:              value.Id,
 				Brand:           value.Brand,
 				Model:           value.Model,
@@ -532,9 +532,9 @@ func (h *VehicleDefault) GetByTransmissionType() http.HandlerFunc {
 		}
 
 		// response
-		data := make(map[int]VehicleJSON)
-		for key, value := range v {
-			data[key] = VehicleJSON{
+		data := make([]VehicleJSON, len(v))
+		for i, value := range v {
+			data[i] = VehicleJSON{
 				ID:              value.Id,
 				Brand:           value.Brand,
 				Model:           value.Model,
@@ -551,7 +551,7 @@ func (h *VehicleDefault) GetByTransmissionType() http.HandlerFunc {
 				Width:           value.Width,
 			}
 		}
-		response.JSON(w, http.StatusOK, map[string]any{
+		response.JSON(w, http.StatusOK, map[string]interface{}{
 			"message": "success",
 			"data":    data,
 		})
