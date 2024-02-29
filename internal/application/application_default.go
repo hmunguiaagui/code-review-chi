@@ -96,6 +96,8 @@ func (a *ServerChi) Run() (err error) {
 		rt.Get("/average_capacity/brand/{brand}", hd.GetAverageCapacityByBrand())
 		// - GET /vehicles/dimensions?length={min_length}-{max_length}&width={min_width}-{max_width}
 		rt.Get("/dimensions", hd.GetByDimensions())
+		// - GET /vehicles/weight?min={weight_min}&max={weight_max}
+		rt.Get("/weight", hd.GetByWeight())
 	})
 
 	// run server

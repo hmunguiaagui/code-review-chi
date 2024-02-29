@@ -90,3 +90,9 @@ func (s *VehicleDefault) GetByDimensions(minLength float64, maxLength float64, m
 	v, err = s.rp.GetByDimensions(minLength, maxLength, minWidth, maxWidth)
 	return
 }
+
+// GetByWeight is a method that returns a slice of vehicles by weight (min weight, max weight)
+func (s *VehicleDefault) GetByWeight(minWeight float64, maxWeight float64) (v []internal.Vehicle, err error) {
+	v, err = s.rp.GetByWeight(minWeight, maxWeight)
+	return
+}

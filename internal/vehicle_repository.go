@@ -35,6 +35,10 @@ var (
 	ErrVehicleMinLengthGreaterThanMaxLength = errors.New("min length is greater than max length")
 	// ErrVehicleMinWidthGreaterThanMaxWidth is an error that represents that the min width is greater than the max width
 	ErrVehicleMinWidthGreaterThanMaxWidth = errors.New("min width is greater than max width")
+	// ErrVehicleWeightInvalid is an error that represents that the weight is invalid
+	ErrVehicleWeightInvalid = errors.New("weight is invalid")
+	// ErrVehicleMinWeightGreaterThanMaxWeight is an error that represents that the min weight is greater than the max weight
+	ErrVehicleMinWeightGreaterThanMaxWeight = errors.New("min weight is greater than max weight")
 )
 
 // VehicleRepository is an interface that represents a vehicle repository
@@ -65,4 +69,6 @@ type VehicleRepository interface {
 	GetAverageCapacityByBrand(brand string) (averageCapacity float64, err error)
 	// GetByDimensions is a method that returns a slice of vehicles by dimensions (min length, max length, min width, max width)
 	GetByDimensions(minLength float64, maxLength float64, minWidth float64, maxWidth float64) (v []Vehicle, err error)
+	// GetByWeight is a method that returns a slice of vehicles by weight (min weight, max weight)
+	GetByWeight(minWeight float64, maxWeight float64) (v []Vehicle, err error)
 }

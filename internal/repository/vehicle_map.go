@@ -406,3 +406,33 @@ func (r *VehicleMap) GetByDimensions(minLength float64, maxLength float64, minWi
 
 	return
 }
+
+// GetByWeight is a method that returns a slice of vehicles by weight (min weight, max weight)
+func (r *VehicleMap) GetByWeight(minWeight float64, maxWeight float64) (v []internal.Vehicle, err error) {
+	// check if min/max weight is less than zero
+	if minWeight < 0 || maxWeight < 0 {
+		err = internal.ErrVehicleWeightInvalid
+		return
+	}
+
+	// check if min weight is greater than max weight
+	if minWeight > maxWeight {
+		err = internal.ErrVehicleMinWeightGreaterThanMaxWeight
+		return
+	}
+
+	// get vehicles by weight
+	for _, value := range r.db {
+		if value.Weight >= minWeight && value.Weight <= maxWeight {
+			v = append(v, value)
+		}
+	}
+
+	// check if slice is empty
+	if len(v) == 0 {
+		err = internal.ErrVehicleNotFound
+		return
+	}
+
+	return
+}

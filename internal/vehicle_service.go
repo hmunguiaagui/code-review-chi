@@ -28,4 +28,6 @@ type VehicleService interface {
 	GetAverageCapacityByBrand(brand string) (averageCapacity float64, err error)
 	// GetByDimensions is a method that returns a slice of vehicles by dimensions (min length, max length, min width, max width)
 	GetByDimensions(minLength float64, maxLength float64, minWidth float64, maxWidth float64) (v []Vehicle, err error)
+	// GetByWeight is a method that returns a slice of vehicles by weight (min weight, max weight)
+	GetByWeight(minWeight float64, maxWeight float64) (v []Vehicle, err error)
 }

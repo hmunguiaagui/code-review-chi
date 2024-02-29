@@ -705,3 +705,68 @@ func (h *VehicleDefault) GetByDimensions() http.HandlerFunc {
 		})
 	}
 }
+
+// GetByWeight is a method that returns a handler for the route - GET /vehicles/weight?min={weight_min}&max={weight_max}
+func (h *VehicleDefault) GetByWeight() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// getting min and max weight from url params
+		minWeight := r.URL.Query().Get("min")
+		// convert min weight to float64
+		minWeightFloat, err := strconv.ParseFloat(minWeight, 64)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, "min_weight must be a number")
+			return
+		}
+		maxWeight := r.URL.Query().Get("max")
+		// convert max weight to float64
+		maxWeightFloat, err := strconv.ParseFloat(maxWeight, 64)
+		if err != nil {
+			response.Error(w, http.StatusBadRequest, "max_weight must be a number")
+			return
+		}
+
+		// process
+		// - get vehicles by weight
+		v, err := h.sv.GetByWeight(minWeightFloat, maxWeightFloat)
+		if err != nil {
+			// switch to know the error type and response accordingly
+			switch {
+			case errors.Is(err, internal.ErrVehicleWeightInvalid):
+				response.Error(w, http.StatusBadRequest, "invalid weight")
+			case errors.Is(err, internal.ErrVehicleMinWeightGreaterThanMaxWeight):
+				response.Error(w, http.StatusBadRequest, "min_weight must be less than or equal to max_weight")
+			case errors.Is(err, internal.ErrVehicleNotFound):
+				response.Error(w, http.StatusNotFound, "vehicle not found")
+			default:
+				response.Error(w, http.StatusInternalServerError, "internal server error")
+			}
+			return
+		}
+
+		// response
+		data := make([]VehicleJSON, len(v))
+		for i, value := range v {
+			data[i] = VehicleJSON{
+				ID:              value.Id,
+				Brand:           value.Brand,
+				Model:           value.Model,
+				Registration:    value.Registration,
+				Color:           value.Color,
+				FabricationYear: value.FabricationYear,
+				Capacity:        value.Capacity,
+				MaxSpeed:        value.MaxSpeed,
+				FuelType:        value.FuelType,
+				Transmission:    value.Transmission,
+				Weight:          value.Weight,
+				Height:          value.Height,
+				Length:          value.Length,
+				Width:           value.Width,
+			}
+		}
+		response.JSON(w, http.StatusOK, map[string]interface{}{
+			"message": "success",
+			"data":    data,
+		})
+	}
+}
