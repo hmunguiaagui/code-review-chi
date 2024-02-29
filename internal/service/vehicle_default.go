@@ -78,3 +78,9 @@ func (s *VehicleDefault) UpdateFuelById(id int, fuel string) (vehicle internal.V
 	vehicle, err = s.rp.UpdateFuelById(id, fuel)
 	return
 }
+
+// GetAverageCapacityByBrand is a method that returns the average capacity by brand
+func (s *VehicleDefault) GetAverageCapacityByBrand(brand string) (averageCapacity float64, err error) {
+	averageCapacity, err = s.rp.GetAverageCapacityByBrand(brand)
+	return
+}

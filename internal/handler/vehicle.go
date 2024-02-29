@@ -595,3 +595,34 @@ func (h *VehicleDefault) UpdateFuelById() http.HandlerFunc {
 		})
 	}
 }
+
+// GetAverageCapacityByBrand is a method that returns a handler for the route - GET /vehicles/average_capacity/brand/{brand}
+func (h *VehicleDefault) GetAverageCapacityByBrand() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// getting brand from url params
+		brand := chi.URLParam(r, "brand")
+
+		// process
+		// - get average capacity by brand
+		v, err := h.sv.GetAverageCapacityByBrand(brand)
+		if err != nil {
+			// switch to know the error type and response accordingly
+			switch {
+			case errors.Is(err, internal.ErrVehicleBrandEmpty):
+				response.Error(w, http.StatusBadRequest, "brand must not be empty")
+			case errors.Is(err, internal.ErrVehicleNotFound):
+				response.Error(w, http.StatusNotFound, "vehicle not found")
+			default:
+				response.Error(w, http.StatusInternalServerError, "internal server error")
+			}
+			return
+		}
+
+		// response
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "success",
+			"data":    v,
+		})
+	}
+}

@@ -24,4 +24,6 @@ type VehicleService interface {
 	GetByTransmissionType(transmissionType string) (v map[int]Vehicle, err error)
 	// UpdateFuelById is a method that updates the fuel of a vehicle by id and returns the vehicle updated
 	UpdateFuelById(id int, fuel string) (vehicle Vehicle, err error)
+	// GetAverageCapacityByBrand is a method that returns the average capacity by brand
+	GetAverageCapacityByBrand(brand string) (averageCapacity float64, err error)
 }

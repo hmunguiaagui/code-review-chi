@@ -92,6 +92,8 @@ func (a *ServerChi) Run() (err error) {
 		rt.Get("/transmission/{type}", hd.GetByTransmissionType())
 		// - PUT /vehicles/{id}/update_fuel?fuel_type={fuel}
 		rt.Put("/{id}/update_fuel", hd.UpdateFuelById())
+		// - GET /vehicles/average_capacity/brand/{brand}
+		rt.Get("/average_capacity/brand/{brand}", hd.GetAverageCapacityByBrand())
 	})
 
 	// run server

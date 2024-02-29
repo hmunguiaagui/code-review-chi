@@ -332,3 +332,35 @@ func (r *VehicleMap) UpdateFuelById(id int, fuelType string) (vehicle internal.V
 
 	return
 }
+
+// GetAverageCapacityByBrand is a method that returns the average capacity by brand
+func (r *VehicleMap) GetAverageCapacityByBrand(brand string) (averageCapacity float64, err error) {
+	// check if brand is empty
+	if brand == "" {
+		err = internal.ErrVehicleBrandEmpty
+		return
+	}
+
+	// get vehicles by brand
+	var vehicles map[int]internal.Vehicle = make(map[int]internal.Vehicle)
+	for key, value := range r.db {
+		if strings.EqualFold(value.Brand, brand) {
+			vehicles[key] = value
+		}
+	}
+
+	// check if map is empty
+	if len(vehicles) == 0 {
+		err = internal.ErrVehicleNotFound
+		return
+	}
+
+	// calculate average capacity
+	var totalCapacity float64
+	for _, value := range vehicles {
+		totalCapacity += float64(value.Capacity)
+	}
+	averageCapacity = totalCapacity / float64(len(vehicles))
+
+	return
+}
