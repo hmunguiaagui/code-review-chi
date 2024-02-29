@@ -20,4 +20,6 @@ type VehicleService interface {
 	GetByFuelType(fuelType string) (v map[int]Vehicle, err error)
 	// DeleteById is a method that deletes a vehicle by id
 	DeleteById(id int) (err error)
+	// GetByTransmissionType is a method that returns a map of vehicles by transmission type
+	GetByTransmissionType(transmissionType string) (v map[int]Vehicle, err error)
 }

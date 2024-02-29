@@ -66,3 +66,9 @@ func (s *VehicleDefault) DeleteById(id int) (err error) {
 	err = s.rp.DeleteById(id)
 	return
 }
+
+// GetByTransmissionType is a method that returns a map of vehicles by transmission type
+func (s *VehicleDefault) GetByTransmissionType(transmissionType string) (v map[int]internal.Vehicle, err error) {
+	v, err = s.rp.GetByTransmissionType(transmissionType)
+	return
+}

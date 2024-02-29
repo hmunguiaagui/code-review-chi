@@ -88,6 +88,8 @@ func (a *ServerChi) Run() (err error) {
 		rt.Get("/fuel_type/{type}", hd.GetByFuelType())
 		// - DELETE /vehicles/{id}
 		rt.Delete("/{id}", hd.DeleteById())
+		// - GET /vehicles/transmission/{type}
+		rt.Get("/transmission/{type}", hd.GetByTransmissionType())
 	})
 
 	// run server

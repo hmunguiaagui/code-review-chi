@@ -25,6 +25,8 @@ var (
 	ErrVehicleSpeedInvalid = errors.New("speed is invalid")
 	// ErrVehicleFuelTypeEmpty is an error that represents that the fuel type is empty
 	ErrVehicleFuelTypeEmpty = errors.New("fuel type is empty")
+	// ErrVehicleTransmissionEmpty is an error that represents that the transmission is empty
+	ErrVehicleTransmissionEmpty = errors.New("transmission is empty")
 )
 
 // VehicleRepository is an interface that represents a vehicle repository
@@ -47,4 +49,6 @@ type VehicleRepository interface {
 	GetByFuelType(fuelType string) (v map[int]Vehicle, err error)
 	// DeleteById is a method that deletes a vehicle by id
 	DeleteById(id int) (err error)
+	// GetByTransmissionType is a method that returns a map of vehicles by transmission type
+	GetByTransmissionType(transmissionType string) (v map[int]Vehicle, err error)
 }

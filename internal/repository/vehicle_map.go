@@ -276,3 +276,29 @@ func (r *VehicleMap) DeleteById(id int) (err error) {
 
 	return
 }
+
+// GetByTransmissionType is a method that returns a map of vehicles by transmission type
+func (r *VehicleMap) GetByTransmissionType(transmissionType string) (v map[int]internal.Vehicle, err error) {
+	v = make(map[int]internal.Vehicle)
+
+	// check if transmission type is empty
+	if transmissionType == "" {
+		err = internal.ErrVehicleTransmissionEmpty
+		return
+	}
+
+	// get vehicles by transmission type
+	for key, value := range r.db {
+		if strings.EqualFold(value.Transmission, transmissionType) {
+			v[key] = value
+		}
+	}
+
+	// check if map is empty
+	if len(v) == 0 {
+		err = internal.ErrVehicleNotFound
+		return
+	}
+
+	return
+}
