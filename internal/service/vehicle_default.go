@@ -54,3 +54,9 @@ func (s *VehicleDefault) UpdateSpeedById(id int, speed float64) (vehicle interna
 	vehicle, err = s.rp.UpdateSpeedById(id, speed)
 	return
 }
+
+// GetByFuelType is a method that returns a map of vehicles by fuel type
+func (s *VehicleDefault) GetByFuelType(fuelType string) (v map[int]internal.Vehicle, err error) {
+	v, err = s.rp.GetByFuelType(fuelType)
+	return
+}

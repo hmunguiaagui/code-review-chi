@@ -146,10 +146,28 @@ func (h *VehicleDefault) Create() http.HandlerFunc {
 			}
 		}
 
+		// vehicle to vehicleJSON
+		responseBody := VehicleJSON{
+			ID:              v.Id,
+			Brand:           v.Brand,
+			Model:           v.Model,
+			Registration:    v.Registration,
+			Color:           v.Color,
+			FabricationYear: v.FabricationYear,
+			Capacity:        v.Capacity,
+			MaxSpeed:        v.MaxSpeed,
+			FuelType:        v.FuelType,
+			Transmission:    v.Transmission,
+			Weight:          v.Weight,
+			Height:          v.Height,
+			Length:          v.Length,
+			Width:           v.Width,
+		}
+
 		// response
 		response.JSON(w, http.StatusCreated, map[string]any{
 			"message": "success",
-			"data":    v,
+			"data":    responseBody,
 		})
 	}
 }
@@ -402,6 +420,56 @@ func (h *VehicleDefault) UpdateSpeedById() http.HandlerFunc {
 		response.JSON(w, http.StatusOK, map[string]any{
 			"message": "success",
 			"data":    v,
+		})
+	}
+}
+
+// GetByFuelType is a method that returns a handler for the route - GET /vehicles/fuel_type/{type}
+func (h *VehicleDefault) GetByFuelType() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// request
+		// getting fuel type from url params
+		fuelType := chi.URLParam(r, "type")
+
+		// process
+		// - get vehicles by fuel type
+		v, err := h.sv.GetByFuelType(fuelType)
+		if err != nil {
+			// switch to know the error type and response accordingly
+			switch {
+			case errors.Is(err, internal.ErrVehicleFuelTypeEmpty):
+				response.Error(w, http.StatusBadRequest, "fuel_type must not be empty")
+			case errors.Is(err, internal.ErrVehicleNotFound):
+				response.Error(w, http.StatusNotFound, "vehicle not found")
+			default:
+				response.Error(w, http.StatusInternalServerError, "internal server error")
+			}
+			return
+		}
+
+		// response
+		data := make(map[int]VehicleJSON)
+		for key, value := range v {
+			data[key] = VehicleJSON{
+				ID:              value.Id,
+				Brand:           value.Brand,
+				Model:           value.Model,
+				Registration:    value.Registration,
+				Color:           value.Color,
+				FabricationYear: value.FabricationYear,
+				Capacity:        value.Capacity,
+				MaxSpeed:        value.MaxSpeed,
+				FuelType:        value.FuelType,
+				Transmission:    value.Transmission,
+				Weight:          value.Weight,
+				Height:          value.Height,
+				Length:          value.Length,
+				Width:           value.Width,
+			}
+		}
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "success",
+			"data":    data,
 		})
 	}
 }

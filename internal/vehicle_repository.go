@@ -23,6 +23,8 @@ var (
 	ErrVehicleIdInvalid = errors.New("id is invalid")
 	// ErrVehicleSpeedInvalid is an error that represents that the speed is invalid
 	ErrVehicleSpeedInvalid = errors.New("speed is invalid")
+	// ErrVehicleFuelTypeEmpty is an error that represents that the fuel type is empty
+	ErrVehicleFuelTypeEmpty = errors.New("fuel type is empty")
 )
 
 // VehicleRepository is an interface that represents a vehicle repository
@@ -41,4 +43,6 @@ type VehicleRepository interface {
 	CreateBatch(v []Vehicle) ([]Vehicle, error)
 	// UpdateSpeedById is a method that updates the speed of a vehicle by id and returns the vehicle updated
 	UpdateSpeedById(id int, speed float64) (vehicle Vehicle, err error)
+	// GetByFuelType is a method that returns a map of vehicles by fuel type
+	GetByFuelType(fuelType string) (v map[int]Vehicle, err error)
 }

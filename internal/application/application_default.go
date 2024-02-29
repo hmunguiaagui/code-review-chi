@@ -84,6 +84,8 @@ func (a *ServerChi) Run() (err error) {
 		rt.Post("/batch", hd.CreateBatch())
 		// - PUT /vehicles/{id}/update_speed?speed={speed}
 		rt.Put("/{id}/update_speed", hd.UpdateSpeedById())
+		// - GET /vehicles/fuel_type/{type}
+		rt.Get("/fuel_type/{type}", hd.GetByFuelType())
 	})
 
 	// run server

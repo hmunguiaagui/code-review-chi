@@ -16,4 +16,6 @@ type VehicleService interface {
 	CreateBatch(v []Vehicle) ([]Vehicle, error)
 	// UpdateSpeedById is a method that updates the speed of a vehicle by id and returns the vehicle updated
 	UpdateSpeedById(id int, speed float64) (vehicle Vehicle, err error)
+	// GetByFuelType is a method that returns a map of vehicles by fuel type
+	GetByFuelType(fuelType string) (v map[int]Vehicle, err error)
 }
